@@ -1,0 +1,68 @@
+<!doctype html>
+<html>
+<head>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 200vh; /* allow scrolling */
+      font-family: sans-serif;
+      background: linear-gradient(to right, #e0c3fc, #8ec5fc);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    #note {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 1.8em;
+      background: rgba(255, 255, 255, 0.8);
+      padding: 20px 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      z-index: 10;
+    }
+
+    #spoof {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      z-index: 9;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+<div id="note">Scroll down and tap 1 times</div>
+<div id="spoof"></div>
+
+<script>
+  let tapCount = 0;
+
+  function handleTap() {
+    tapCount++;
+    if (tapCount >= 3) {
+      document.getElementById('note').style.display = 'none';
+      const spoofDiv = document.getElementById('spoof');
+      spoofDiv.style.backgroundImage = 'url("spoof.png")';
+      spoofDiv.style.display = 'block';
+    }
+  }
+
+  document.addEventListener('click', handleTap);
+  document.addEventListener('touchstart', handleTap);
+</script>
+
+</body>
+</html>
