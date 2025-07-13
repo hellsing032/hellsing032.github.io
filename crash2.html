@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body onload="document.getElementById('testInput').value = payload;">
+    <input type="text" id="testInput" style="width: 500px;">
+<script>
+    let payload = "[a](" + "/a".repeat(500000) + ")";
+    document.getElementById("testInput").value = payload;
+</script>
+</body>
+</html>
