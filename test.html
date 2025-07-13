@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Redirect to Blob</title>
+  <meta http-equiv="Content-Security-Policy" content="sandbox allow-scripts">
+  <script>
+    const text = `<h1>Address blank</h1>`;
+    const blob = new Blob([text], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    location.href = url;
+  </script>
+</head>
+<body>
+</body>
+</html>
