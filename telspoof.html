@@ -1,0 +1,21 @@
+<html>
+  <head>
+    <title>tel: Spoofing Demo</title>
+  </head>
+  <body>
+    <h2>Click to Continue</h2>
+    <input 
+      type="button" 
+      value="Click here" 
+      onclick="
+        setTimeout(function() {
+          window.open('https://phantom.com/careers');
+        }, 123);
+
+        setTimeout(function() {
+          document.location = 'tel:+2123232';
+        }, 723);
+      "
+    >
+  </body>
+</html>
