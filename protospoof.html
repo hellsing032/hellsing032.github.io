@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Start Redirect</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #f4f4f4;
+    }
+
+    button {
+      font-size: 2rem;
+      padding: 1em 2em;
+      border: none;
+      border-radius: 10px;
+      background-color: #007bff;
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <button onclick="startRedirect()">Start</button>
+
+  <script>
+    function startRedirect() {
+      setTimeout(() => {
+        // Try to open Telegram
+        location.href = "tg://resolve?domain=";
+
+        // Then fallback to Phantom after a short delay
+        setTimeout(() => {
+          location.href = "https://apple.com";
+        }, 123);
+      }, 723); //
+    }
+  </script>
+</body>
+</html>
