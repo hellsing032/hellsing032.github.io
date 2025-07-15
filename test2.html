@@ -1,26 +1,34 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta http-equiv="Content-Security-Policy" content="sandbox allow-scripts">
-  <title>Phantom</title>
-  <script>
-    const fakePage = `
-      <style>
-        body { font-family: sans-serif; text-align: center; padding-top: 50px; }
-        input { padding: 10px; margin: 5px; width: 80%; }
-        button { padding: 10px; width: 85%; }
-      </style>
-      <h2>Phantom Wallet</h2>
-      <p>Please re-enter your credentials</p>
-      <input placeholder="Seed Phrase" />
-      <br>
-      <button>Unlock</button>
-    `;
-    const blob = new Blob([fakePage], { type: "text/html" });
-    const url = URL.createObjectURL(blob);
-    location.href = url;
-  </script>
+  <meta charset="UTF-8">
+  <title>Blob Protocol Navigation Test</title>
 </head>
-<body></body>
+<body>
+  <h1>Navigation with Blob and Other Protocols</h1>
+
+  <ul>
+    <li><a href="blob:https://phantom.com" target="_blank">Open blob:https://phantom.com</a></li>
+    <li><a href="blob://" target="_blank">Open blob://</a></li>
+    <li><a href="blob:/" target="_blank">Open blob:/</a></li>
+    <li><a href="blob:///" target="_blank">Open blob:///</a></li>
+    <li><a href="data:text/html,<h1>Hi</h1>" target="_blank">Open data:text/html</a></li>
+    <li><a href="javascript:alert('Test')" target="_blank">Open javascript:alert()</a></li>
+    <li><a href="filesystem:https://phantom.com/temporary/test.txt" target="_blank">Open filesystem:https://phantom.com</a></li>
+    <li><a href="phantom.com" target="_blank">Open phantom.com (without protocol)</a></li>
+  </ul>
+
+  <script>
+    // Create a blob URL that navigates to a simulated page
+    const htmlContent = `<h1>This is a blob URL page</h1><p>You are inside a blob context.</p>`;
+    const blob = new Blob([htmlContent], { type: 'text/html' });
+    const blobUrl = URL.createObjectURL(blob);
+
+    const link = document.createElement('a');
+    link.href = blobUrl;
+    link.innerText = 'Open Blob Page (real blob)';
+    link.target = '_blank';
+    document.body.appendChild(link);
+  </script>
+</body>
 </html>
