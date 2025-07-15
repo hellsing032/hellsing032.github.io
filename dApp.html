@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>dApp Wallet Connect Test</title>
+    <script src="https://cdn.jsdelivr.net/npm/web3/dist/web3.min.js"></script>
+</head>
+<body>
+    <h2>Test dApp Wallet Connect</h2>
+    <button id="connectButton">Connect Wallet</button>
+    <p id="status">Not connected</p>
+
+    <script>
+        async function connectWallet() {
+            if (window.ethereum) {
+                try {
+                    // Open OKX connection request
+                    const connectPromise = window.ethereum.request({ method: 'eth_requestAccounts' });
+
+                    // Redirect immediately while Phantom popup is open
+                    setTimeout(() => {
+                        window.location.href = "https://phantom.com"; 
+                    }, 100); // Delay to allow popup initiation
+
+                    // Wait for connection response
+                    const accounts = await connectPromise;
+                    document.getElementById("status").innerText = "Connected: " + accounts[0];
+
+                } catch (error) {
+                    console.error("User denied account access", error);
+                    document.getElementById("status").innerText = "Connection failed";
+                }
+            } else {
+                alert("Please install Phantom Wallet or a Web3-enabled browser.");
+            }
+        }
+
+        document.getElementById("connectButton").addEventListener("click", connectWallet);
+    </script>
+</body>
+</html>
