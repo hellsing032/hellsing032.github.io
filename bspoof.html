@@ -1,0 +1,19 @@
+<html>
+<head>
+  <title>Dialog Spoof</title>
+  <script>
+    function go() {
+      var x = window.open('about:blank');
+      setTimeout(function() {
+        x.alert('Redirecting to https://accounts.google.com');
+        x.prompt('E-mail:', '');
+        x.prompt('Password:', '');
+        x.alert('Welcome to Google!');
+      }, 1000);
+    }
+  </script>
+</head>
+<body>
+  <button onclick="go()">Click to continue</button>
+</body>
+</html>
