@@ -1,20 +1,37 @@
-<!DOCTYPE html>
 <html>
-  <head>
-    <title>Address Bar Spoofing Demo</title>
-    <script>
-      // Langsung eksekusi setelah page load
-      window.onload = () => {
-        // Langkah 1: Tambahkan riwayat palsu ke google.com
-        history.pushState({}, '', 'https://www.google.com');
+    <body>
+        <script>
+    
+        (function () {
+            Object.keys(window)
+                .filter(key => key.startsWith('on'))
+                .forEach(event => {
+                    window.addEventListener(event.slice(2), e => {
+                        window.open(`https://google/?event=${e.type}&element=global`, "_blank");
+                    });
+                });
 
-        // Langkah 2: Redirect ke google.com (atau bisa diganti ke domain target lain)
-        setTimeout(() => {
-          location.href = "https://www.google.com";
-        }, 1000);
-      };
-    </script>
-  </head>
-  <body>
-    <h1>Redirecting to Google...</h1>
-  </body>
+            const addListeners = () => {
+                const eventTypes = Object.keys(window)
+                    .filter(key => key.startsWith('on'))
+                    .map(key => key.slice(2));
+                const elements = document.querySelectorAll('*');
+
+                elements.forEach(element => {
+                    eventTypes.forEach(eventType => {
+                        element.addEventListener(eventType, e => {
+                            const tagName = element.tagName.toLowerCase();
+                    
+                            window.open(`https://google.com/?event=${e.type}&element=${tagName}`, "_blank");
+                        });
+                    });
+                });
+            };
+            for(let i=0; i<10;i++){
+                addListeners();
+            }
+
+        })();
+        </script>
+    </body>
+</html>
