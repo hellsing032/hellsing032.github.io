@@ -1,0 +1,65 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Phantom Deeplink Flow Tester</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+  body{font:14px/1.4 system-ui,sans-serif;max-width:760px;margin:24px auto;padding:0 12px}
+  input,button,select{font:inherit;padding:.4rem}
+  .row{margin:.6rem 0}
+  code,pre{background:#f6f7f9;padding:6px 8px;border-radius:6px}
+</style>
+<h2>Phantom Deeplink Flow Tester</h2>
+
+<div class="row">
+  <label>Method: </label>
+  <select id="method">
+    <option value="v1/connect">v1/connect</option>
+    <option value="v1/signMessage">v1/signMessage</option>
+    <option value="v1/signAndSendTransaction">v1/signAndSendTransaction</option>
+  </select>
+</div>
+
+<div class="row">
+  <label>app_url (shown as app metadata): </label>
+  <input id="appUrl" size="60" placeholder="https://victim.example (or attacker.example)">
+</div>
+
+<div class="row">
+  <label>redirect_link (return target): </label>
+  <input id="redirectLink" size="60" placeholder="mydapp://onReturn OR https://attacker.example/return">
+</div>
+
+<div class="row">
+  <label>Extra query (optional): </label>
+  <input id="extra" size="60" placeholder="cluster=devnet&state=xyz">
+</div>
+
+<div class="row">
+  <button id="ul">Open via Universal Link</button>
+  <button id="scheme">Open via Custom Scheme</button>
+</div>
+
+<pre id="out"></pre>
+
+<script>
+  const out = document.getElementById('out');
+  const enc = s => encodeURIComponent(s || "");
+
+  function build(base) {
+    const method = document.getElementById('method').value;
+    const appUrl = document.getElementById('appUrl').value.trim();
+    const redirect = document.getElementById('redirectLink').value.trim();
+    const extra = document.getElementById('extra').value.trim();
+
+    const qp = [];
+    if (appUrl) qp.push("app_url=" + enc(appUrl)); // Phantom docs describe app metadata from app_url
+    if (redirect) qp.push("redirect_link=" + enc(redirect)); // supported by all methods
+    if (extra) qp.push(extra);
+    const url = `${base}/${method}` + (qp.length ? `?${qp.join("&")}` : "");
+    out.textContent = "Launching: " + url;
+    location.href = url;
+  }
+
+  document.getElementById('ul').onclick     = () => build("https://phantom.app/ul");
+  document.getElementById('scheme').onclick  = () => build("phantom://");
+</script>
