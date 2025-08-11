@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<body>
+<pre id="log"></pre>
+<script>
+const log = msg => document.getElementById("log").textContent += "\n" + msg;
+
+try {
+    // Payload: malformed JSON (tidak ditutup)
+    const malformedPayload = "{unclosed_json:";
+
+    if (window.webkit?.messageHandlers?.ReactNativeWebView) {
+        log("iOS ReactNativeWebView detected.");
+        window.webkit.messageHandlers.ReactNativeWebView.postMessage(malformedPayload);
+        log("Sent MALFORMED JSON payload.");
+    } 
+    else if (window.ReactNativeWebView) {
+        log("Android ReactNativeWebView detected.");
+        window.ReactNativeWebView.postMessage(malformedPayload);
+        log("Sent MALFORMED JSON payload.");
+    } 
+    else {
+        log("ReactNativeWebView handler not available.");
+    }
+} catch (e) {
+    log("JS Exception: " + e.message);
+}
+</script>
+</body>
+</html>
